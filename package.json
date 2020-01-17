@@ -1,7 +1,7 @@
 {
-  "name": "universal-model-vue",
-  "version": "0.4.0",
-  "description": "Universal model for Vue",
+  "name": "universal-model-react",
+  "version": "0.1.0",
+  "description": "Universal model for React",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
   "files": [
@@ -19,24 +19,25 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/universal-model/universal-model-vue.git"
+    "url": "https://github.com/universal-model/universal-model-react.git"
   },
   "keywords": [
     "Univeral Model",
-    "Vue"
+    "React"
   ],
   "author": "Petri Silen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/universal-model/universal-model-vue/issues"
+    "url": "https://github.com/universal-model/universal-model-react/issues"
   },
-  "homepage": "https://github.com/universal-model/universal-model-vue#readme",
-  "dependencies": {},
+  "homepage": "https://github.com/universal-model/universal-model-react#readme",
+  "dependencies": {
+    "vue": "^3.0.0-alpha.1"
+  },
   "devDependencies": {
     "@babel/cli": "^7.8.0",
     "@babel/core": "^7.8.0",
     "@babel/plugin-proposal-class-properties": "^7.8.0",
-    "@babel/plugin-proposal-export-default-from": "^7.8.3",
     "@babel/preset-env": "^7.8.2",
     "@babel/preset-typescript": "^7.8.0",
     "@types/estree": "0.0.42",
@@ -47,7 +48,7 @@
     "prettier": "^1.19.1",
     "react": "^16.12.0",
     "rimraf": "^3.0.0",
-    "typescript": "^3.7.5",
+    "typescript": "^3.7.4",
     "vue": "^3.0.0-alpha.1"
   },
   "browserslist": [
