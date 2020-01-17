@@ -40,8 +40,12 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
     }
   }
 
+  getState(): ReactiveState<T> {
+    return this.reactiveState;
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getStateAndSelectors(keys: any): [ReactiveState<T>, ComputedSelectors<T, U>] {
+  getStateAndSelectorsForView(keys: any[]): [ReactiveState<T>, ComputedSelectors<T, U>] {
     const stopWatches = [] as StopHandle[];
 
     useEffect(() => {
