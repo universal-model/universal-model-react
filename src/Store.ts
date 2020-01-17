@@ -19,7 +19,6 @@ type ComputedSelectors<T extends State, U extends SelectorsBase<T>> = {
 };
 
 type ReactiveState<T> = T extends Ref ? T : UnwrapRef<T>;
-type PartialReactiveState<T> = Partial<ReactiveState<T>>;
 
 export default class Store<T extends State, U extends SelectorsBase<T>> {
   private readonly reactiveState: ReactiveState<T>;
@@ -63,16 +62,5 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
     }, []);
 
     return [this.reactiveState, this.reactiveSelectors];
-  }
-
-  patchState(subState: PartialReactiveState<T>): void {
-    Object.entries(subState).forEach(
-      ([key, value]: [
-        keyof PartialReactiveState<T>,
-        PartialReactiveState<T>[keyof PartialReactiveState<T>]
-      ]) => {
-        this.reactiveState[key] = value as ReactiveState<T>[keyof ReactiveState<T>];
-      }
-    );
   }
 }
