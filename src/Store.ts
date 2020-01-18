@@ -1,6 +1,5 @@
 import { Ref, UnwrapRef, ComputedRef, reactive, computed, watch, StopHandle } from 'vue';
-import useForceUpdate from './useForceUpdate';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type State = { [key: string]: any };
@@ -45,6 +44,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getStateAndSelectorsForView(keys: any[]): [ReactiveState<T>, ComputedSelectors<T, U>] {
+    const [, update] = useState({});
     const stopWatches = [] as StopHandle[];
 
     useEffect(() => {
@@ -53,7 +53,9 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
         stopWatches.push(
           watch(
             () => this.reactiveState[key],
-            () => useForceUpdate()
+            () => {
+              update({});
+            }
           )
         );
       });
