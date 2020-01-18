@@ -1,4 +1,4 @@
-import { Ref, UnwrapRef, ComputedRef, reactive, computed, watch, StopHandle } from 'vue';
+import { Ref, UnwrapRef, reactive, watch, StopHandle, ComputedRef, computed } from 'vue';
 import { useEffect, useState } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,19 +42,25 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
     return this.reactiveState;
   }
 
+  getSelectors(): ComputedSelectors<T, U> {
+    return this.reactiveSelectors;
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getStateAndSelectorsForView(keys: any[]): [ReactiveState<T>, ComputedSelectors<T, U>] {
-    const [, update] = useState({});
-    const stopWatches = [] as StopHandle[];
+  useState(subStates: any[]): void {
+    const [, updateView] = useState({});
 
     useEffect(() => {
+      const stopWatches = [] as StopHandle[];
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      keys.forEach((key: any) => {
+      subStates.forEach((subState: any) => {
         stopWatches.push(
           watch(
-            () => this.reactiveState[key],
-            () => {
-              update({});
+            () => subState,
+            () => updateView({}),
+            {
+              deep: true
             }
           )
         );
@@ -62,7 +68,29 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
 
       return () => stopWatches.forEach((stopWatch: StopHandle) => stopWatch());
     }, []);
+  }
 
-    return [this.reactiveState, this.reactiveSelectors];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useSelectors(selectors: any[]): void {
+    const [, updateView] = useState({});
+
+    useEffect(() => {
+      const stopWatches = [] as StopHandle[];
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      selectors.forEach((selector: any) => {
+        stopWatches.push(
+          watch(
+            () => selector,
+            () => updateView({}),
+            {
+              deep: true
+            }
+          )
+        );
+      });
+
+      return () => stopWatches.forEach((stopWatch: StopHandle) => stopWatch());
+    }, []);
   }
 }
