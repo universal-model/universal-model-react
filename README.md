@@ -46,7 +46,7 @@ Access store
 
 Use state and selectors in Views
 
-    useStore([subState1, subState21]);
+    useState([subState1, subState21]);
     useSelectors([selector1, selector2]);
     useStateAndSelectors([subState1, subState21], [selector1, selector2]);
 
