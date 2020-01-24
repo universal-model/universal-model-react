@@ -48,7 +48,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useState(subStates: any[]): void {
-    const [, updateView] = useState({});
+    const [, updateViewDueToStateChange] = useState({});
 
     useEffect(() => {
       const stopWatches = [] as StopHandle[];
@@ -58,7 +58,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
         stopWatches.push(
           watch(
             () => subState,
-            () => updateView({}),
+            () => updateViewDueToStateChange({}),
             {
               deep: true
             }
@@ -72,7 +72,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useSelectors(selectors: any[]): void {
-    const [, updateView] = useState({});
+    const [, updateViewDueToSelectorChange] = useState({});
 
     useEffect(() => {
       const stopWatches = [] as StopHandle[];
@@ -82,7 +82,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
         stopWatches.push(
           watch(
             () => selector,
-            () => updateView({}),
+            () => updateViewDueToSelectorChange({}),
             {
               deep: true
             }
