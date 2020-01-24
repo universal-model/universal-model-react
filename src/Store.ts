@@ -46,6 +46,16 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
     return this.reactiveSelectors;
   }
 
+  getStateAndSelectors(): [ReactiveState<T>, ComputedSelectors<T, U>] {
+    return [this.reactiveState, this.reactiveSelectors];
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useStateAndSelectors(subStates: any[], selectors: any[]): void {
+    this.useState(subStates);
+    this.useSelectors(selectors);
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useState(subStates: any[]): void {
     const [, updateViewDueToStateChange] = useState({});
