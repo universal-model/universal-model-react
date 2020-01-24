@@ -193,7 +193,6 @@ addTodo.ts
       id++;
     }
 
-
 removeTodo.ts
 
     import store from '@/store/store';
@@ -333,7 +332,7 @@ TodoListView.tsx
 
 ### Full Example
 
-https://github.com/universal-model/universal-model-vue-todo-app
+https://github.com/universal-model/universal-model-react-todo-app
 
 ### License
 
