@@ -117,7 +117,7 @@ createTodoListStateSelectors.ts
 
 store.ts
 
-    import { createStore } from 'universal-model-vue';
+    import { createStore } from 'universal-model-react';
     import initialTodoListState from '@/todolist/model/state/initialTodoListState';
     import createTodoListStateSelectors from '@/todolist/model/state/createTodoListStateSelectors';
 
