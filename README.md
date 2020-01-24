@@ -152,26 +152,27 @@ ITodoService.ts
 
 FakeTodoService.ts
 
-import { ITodoService } from '@/todolist/model/services/ITodoService';
-import { Todo } from '@/todolist/model/state/initialTodoListState';
-import Constants from "@/Constants";
+    import { ITodoService } from './ITodoService';
+    import { Todo } from '../state/initialTodoListState';
+    import Constants from '../../../Constants';
+    
+    export default class FakeTodoService implements ITodoService {
+      tryFetchTodos(): Promise<Todo[]> {
+        return new Promise<Todo[]>((resolve: (todo: Todo[]) => void, reject: () => void) => {
+          setTimeout(() => {
+            if (Math.random() < 0.95) {
+              resolve([
+                { id: 1, name: 'first todo', isDone: true },
+                { id: 2, name: 'second todo', isDone: false }
+              ]);
+            } else {
+              reject();
+            }
+          }, Constants.FAKE_SERVICE_LATENCY_IN_MILLIS);
+        });
+      }
+    }
 
-export default class FakeTodoService implements ITodoService {
-tryFetchTodos(): Promise<Todo[]> {
-return new Promise<Todo[]>((resolve: (todo: Todo[]) => void, reject: () => void) => {
-setTimeout(() => {
-if (Math.random() < 0.95) {
-resolve([
-{ id: 1, name: 'first todo', isDone: true },
-{ id: 2, name: 'second todo', isDone: false }
-]);
-} else {
-reject();
-}
-}, Constants.FAKE_SERVICE_LATENCY_IN_MILLIS);
-});
-}
-}
 
 todoService.ts
 
