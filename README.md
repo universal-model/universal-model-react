@@ -173,7 +173,6 @@ FakeTodoService.ts
       }
     }
 
-
 todoService.ts
 
     import FakeTodoService from "@/todolist/model/services/FakeTodoService";
@@ -184,15 +183,16 @@ todoService.ts
 
 addTodo.ts
 
-import store from '@/store/store';
+    import store from '../../../store/store';
+    
+    let id = 3;
+    
+    export default function addTodo(): void {
+      const { todosState } = store.getState();
+      todosState.todos.push({ id, name: 'new todo', isDone: false });
+      id++;
+    }
 
-let id = 3;
-
-export default function addTodo(): void {
-const { todosState } = store.getState();
-todosState.todos.push({ id, name: 'new todo', isDone: false });
-id++;
-}
 
 removeTodo.ts
 
