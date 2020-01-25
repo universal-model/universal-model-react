@@ -43,12 +43,17 @@ Access store
 
 Use state and selectors in Views
     
-     const { subState1, subState2: { prop1 }, subState3: { prop1: myProp } } = store.getState();
-     const { selector1, selector2 } = store.getSelectors();
+    const View = () => {
+      const { subState1, subState2: { prop1 }, subState3: { prop1: myProp } } = store.getState();
+      const { selector1, selector2 } = store.getSelectors();
 
-    useState([subState1, prop1, myProp]);
-    useSelectors([selector1, selector2]);
-    useStateAndSelectors([subState1, prop1, myProp], [selector1, selector2]);
+      useState([subState1, prop1, myProp]);
+      useSelectors([selector1, selector2]);
+      
+      // or alternatively
+      useStateAndSelectors([subState1, prop1, myProp], [selector1, selector2]);
+      
+    }
 
 ## Clean UI Code directory layout
 
