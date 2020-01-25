@@ -2,10 +2,10 @@
 
 Universal model is a model which can be used with any of following UI frameworks:
 
-- Angular 2+
+- Angular 2+ [universal-model-angular]
 - React 16.8+
-- Svelte 3+
-- Vue.js 3+
+- Svelte 3+ [universal-model-svelte]
+- Vue.js 3+ [universal-model-vue]
 
 ## Install
 
@@ -41,14 +41,14 @@ Access store
     const selectors = store.getSelectors();
     const [state, selectors] = store.getStateAndSelectors();
 
-    const { subState1, subState2: { subState21 } } = store.getState();
-    const { selector1, selector2 } = store.getSelectors();
-
 Use state and selectors in Views
+    
+     const { subState1, subState2: { prop1 }, subState3: { prop1: myProp } } = store.getState();
+     const { selector1, selector2 } = store.getSelectors();
 
-    useState([subState1, subState21]);
+    useState([subState1, prop1, myProp]);
     useSelectors([selector1, selector2]);
-    useStateAndSelectors([subState1, subState21], [selector1, selector2]);
+    useStateAndSelectors([subState1, prop1, myProp], [selector1, selector2]);
 
 ## Clean UI Code directory layout
 
@@ -74,7 +74,90 @@ Use state and selectors in Views
       |  |- view
       |- store
 
-## Example
+# Example
+
+## View
+
+TodoListView.tsx
+
+    import * as React from 'react';
+    import { useEffect } from 'react';
+    import store from '../../store/store';
+    import { Todo } from '../model/state/initialTodoListState';
+    import removeTodo from '../model/actions/removeTodo';
+    import fetchTodos from '../model/actions/fetchTodos';
+    import todoListController from '../controller/todoListController';
+    import toggleIsDoneTodo from '../model/actions/toggleIsDoneTodo';
+    import toggleShouldShowOnlyUnDoneTodos from '../model/actions/toggleShouldShowOnlyUnDoneTodos';
+
+    const TodoListView = () => {
+      const [{ todosState }, { shownTodos }] = store.getStateAndSelectors();
+      store.useStateAndSelectors([todosState], [shownTodos]);
+
+      useEffect(() => {
+        // noinspection JSIgnoredPromiseFromCall
+        fetchTodos();
+        document.addEventListener('keypress', todoListController.handleKeyPress);
+        return () => document.removeEventListener('keypress', todoListController.handleKeyPress);
+      }, []);
+
+      let todoListContent;
+
+      if (todosState.isFetchingTodos) {
+        todoListContent = <div>Fetching todos...</div>;
+      } else if (todosState.hasTodosFetchFailure) {
+        todoListContent = <div>Failed to fetch todos</div>;
+      } else {
+        const todoListItems = shownTodos.value.map((todo: Todo, index: number) => (
+          <li key={todo.id}>
+            <input
+              id={todo.name}
+              type="checkbox"
+              defaultChecked={todo.isDone}
+              onChange={() => toggleIsDoneTodo(todo)}
+            />
+            <label>{todo.name}</label>
+            <button onClick={() => removeTodo(todo)}>Remove</button>
+          </li>
+        ));
+
+        todoListContent = <ul>{todoListItems}</ul>;
+      }
+
+      return (
+        <div>
+          <input
+            id="shouldShowOnlyDoneTodos"
+            type="checkbox"
+            defaultChecked={todosState.shouldShowOnlyUnDoneTodos}
+            onChange={toggleShouldShowOnlyUnDoneTodos}
+          />
+          <label>Show only undone todos</label>
+          {todoListContent}
+        </div>
+      );
+    };
+
+    export default TodoListView;
+
+## Controller
+
+todoListController.ts
+
+    import addTodo from "@/todolist/model/actions/addTodo";
+    import removeAllTodos from "@/todolist/model/actions/removeAllTodos";
+
+    export default {
+      handleKeyPress(keyboardEvent: KeyboardEvent): void {
+        if (keyboardEvent.code === 'KeyA' && keyboardEvent.ctrlKey) {
+          addTodo();
+        } else if (keyboardEvent.code === 'KeyR' && keyboardEvent.ctrlKey) {
+          removeAllTodos();
+        }
+      }
+    };
+    
+## Model
 
 ### State
 
@@ -249,87 +332,6 @@ fetchTodos.ts
         todosState.isFetchingTodos = false;
     }
 
-### Controller
-
-todoListController.ts
-
-    import addTodo from "@/todolist/model/actions/addTodo";
-    import removeAllTodos from "@/todolist/model/actions/removeAllTodos";
-
-    export default {
-      handleKeyPress(keyboardEvent: KeyboardEvent): void {
-        if (keyboardEvent.code === 'KeyA') {
-          addTodo();
-        } else if (keyboardEvent.code === 'KeyR') {
-          removeAllTodos();
-        }
-      }
-    };
-
-### View
-
-TodoListView.tsx
-
-    import * as React from 'react';
-    import { useEffect } from 'react';
-    import store from '../../store/store';
-    import { Todo } from '../model/state/initialTodoListState';
-    import removeTodo from '../model/actions/removeTodo';
-    import fetchTodos from '../model/actions/fetchTodos';
-    import todoListController from '../controller/todoListController';
-    import toggleIsDoneTodo from '../model/actions/toggleIsDoneTodo';
-    import toggleShouldShowOnlyUnDoneTodos from '../model/actions/toggleShouldShowOnlyUnDoneTodos';
-
-    const TodoListView = () => {
-      const [{ todosState }, { shownTodos }] = store.getStateAndSelectors();
-      store.useStateAndSelectors([todosState], [shownTodos]);
-
-      useEffect(() => {
-        // noinspection JSIgnoredPromiseFromCall
-        fetchTodos();
-        document.addEventListener('keypress', todoListController.handleKeyPress);
-        return () => document.removeEventListener('keypress', todoListController.handleKeyPress);
-      }, []);
-
-      let todoListContent;
-
-      if (todosState.isFetchingTodos) {
-        todoListContent = <div>Fetching todos...</div>;
-      } else if (todosState.hasTodosFetchFailure) {
-        todoListContent = <div>Failed to fetch todos</div>;
-      } else {
-        const todoListItems = shownTodos.value.map((todo: Todo, index: number) => (
-          <li key={todo.id}>
-            <input
-              id={todo.name}
-              type="checkbox"
-              defaultChecked={todo.isDone}
-              onChange={() => toggleIsDoneTodo(todo)}
-            />
-            <label>{todo.name}</label>
-            <button onClick={() => removeTodo(todo)}>Remove</button>
-          </li>
-        ));
-
-        todoListContent = <ul>{todoListItems}</ul>;
-      }
-
-      return (
-        <div>
-          <input
-            id="shouldShowOnlyDoneTodos"
-            type="checkbox"
-            defaultChecked={todosState.shouldShowOnlyUnDoneTodos}
-            onChange={toggleShouldShowOnlyUnDoneTodos}
-          />
-          <label>Show only undone todos</label>
-          {todoListContent}
-        </div>
-      );
-    };
-
-    export default TodoListView;
-
 ### Full Example
 
 https://github.com/universal-model/universal-model-react-todo-app
@@ -337,3 +339,7 @@ https://github.com/universal-model/universal-model-react-todo-app
 ### License
 
 MIT License
+
+[universal-model-angular]: https://github.com/universal-model/universal-model-angular
+[universal-model-svelte]: https://github.com/universal-model/universal-model-svelte
+[universal-model-vue]: https://github.com/universal-model/universal-model-vue
