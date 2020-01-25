@@ -159,6 +159,33 @@ todoListController.ts
     
 ## Model
 
+### Store
+
+store.ts
+
+    import { createStore } from 'universal-model-react';
+    import initialTodoListState from '@/todolist/model/state/initialTodoListState';
+    import createTodoListStateSelectors from '@/todolist/model/state/createTodoListStateSelectors';
+
+    const initialState = {
+      todosState: initialTodosState,
+      otherState: initialOtherState,
+      .
+      .
+    };
+
+    export type State = typeof initialState;
+
+    const selectors = {
+      ...createTodosStateSelectors<State>(),
+      ...createOtherStateSelectors<State>(),
+      .
+      .
+
+    };
+
+    export default createStore(initialState, selectors);
+
 ### State
 
 #### Initial state
@@ -195,33 +222,6 @@ createTodoListStateSelectors.ts
     });
 
     export default createTodoListStateSelectors;
-
-### Store
-
-store.ts
-
-    import { createStore } from 'universal-model-react';
-    import initialTodoListState from '@/todolist/model/state/initialTodoListState';
-    import createTodoListStateSelectors from '@/todolist/model/state/createTodoListStateSelectors';
-
-    const initialState = {
-      todosState: initialTodosState,
-      otherState: initialOtherState,
-      .
-      .
-    };
-
-    export type State = typeof initialState;
-
-    const selectors = {
-      ...createTodosStateSelectors<State>(),
-      ...createOtherStateSelectors<State>(),
-      .
-      .
-
-    };
-
-    export default createStore(initialState, selectors);
 
 ### Service
 
