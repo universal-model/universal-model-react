@@ -41,7 +41,7 @@ Access store
     const selectors = store.getSelectors();
     const [state, selectors] = store.getStateAndSelectors();
 
-Use state and selectors in Views
+Use state and selectors in Views (React functional components)
     
     const View = () => {
       const { subState1, subState2: { prop1 }, subState3: { prop1: myProp } } = store.getState();
@@ -52,6 +52,9 @@ Use state and selectors in Views
       
       // or alternatively
       useStateAndSelectors([subState1, prop1, myProp], [selector1, selector2]);
+      
+      // get the value of a selector using it's 'value' property
+      console.log(selector1.value);
       
     }
 
