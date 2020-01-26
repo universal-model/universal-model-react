@@ -55,7 +55,7 @@ Use state and selectors in Views (React functional components)
       
       // get the value of a selector using it's 'value' property
       console.log(selector1.value);
-      
+     
     }
 
 ## Clean UI Code directory layout
