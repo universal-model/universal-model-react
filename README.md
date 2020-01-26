@@ -30,6 +30,7 @@ Universal model is a model which can be used with any of following UI frameworks
 - A new view can be created to represent model differently without any changes to model
 
 ## API
+    const subState = createSubState(subState);
     const store = createStore(initialState, combineSelectors(selectors))
     const state = store.getState();
     const selectors = store.getSelectors();
@@ -42,8 +43,8 @@ Universal model is a model which can be used with any of following UI frameworks
 **Create and export store in store.ts:**
     
     const initialState = {
-      componentAState: initialComponentAState,
-      componentBState: initialComponentBState,
+      componentAState: createSubState(initialComponentAState),
+      componentBState: createSubState(initialComponentBState),
       .
       .
     };
@@ -227,32 +228,35 @@ todoListController.ts
 
 store.ts
 
-    import { createStore } from 'universal-model-react';
+    import { createSubState, createStore } from 'universal-model-react';
     import initialTodoListState from '@/todolist/model/state/initialTodoListState';
     import createTodoListStateSelectors from '@/todolist/model/state/createTodoListStateSelectors';
 
     const initialState = {
-      todosState: initialTodosState,
-      otherState: initialOtherState,
+      todosState: createSubState(initialTodosState),
+      otherState: createSubState(initialOtherState),
       .
       .
     };
 
     export type State = typeof initialState;
 
-    const selectors = {
-      ...createTodosStateSelectors<State>(),
-      ...createOtherStateSelectors<State>(),
-      .
-      .
-
-    };
+    const selectors = combineSelectors([
+      createTodosStateSelectors<State>(),
+      createOtherStateSelectors<State>()
+    ]);
 
     export default createStore(initialState, selectors);
 
 ### State
 
 #### Initial state
+initialHeaderState.ts
+
+    export default {
+      userName: 'John'
+    };
+
 
 initialTodoListState.ts
 
@@ -270,6 +274,17 @@ initialTodoListState.ts
     };
 
 #### State selectors
+
+createHeaderStateStateSelectors.ts
+
+    import { State } from '@/store/store';
+    
+    const createHeaderStateSelectors = <T extends State>() => ({
+      userName: (state: T) => state.headerState.userName
+    });
+    
+    export default createHeaderStateSelectors;
+
 
 createTodoListStateSelectors.ts
 
@@ -327,6 +342,16 @@ todoService.ts
     export default new FakeTodoService();
 
 ### Actions
+
+changeUserName.ts
+
+    import store from '@/store/store';
+    
+    export default function changeUserName(newUserName: string): void {
+      const { headerState } = store.getState();
+      headerState.userName = newUserName;
+    }
+
 
 addTodo.ts
 
