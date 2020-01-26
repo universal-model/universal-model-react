@@ -1,6 +1,5 @@
 import { Ref, UnwrapRef, reactive, watch, StopHandle, ComputedRef, computed } from 'vue';
 import { useEffect, useState } from 'react';
-import { isSubStateSymbol } from './createSubState';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type State = { [key: string]: object };
@@ -67,7 +66,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       subStates.forEach((subState: object) => {
         if (!Object.getOwnPropertySymbols(subState)[0]) {
-          throw new Error('One of given subStates is not subState');
+          throw new Error('useState: One of given subStates is not subState');
         }
 
         stopWatches.push(
