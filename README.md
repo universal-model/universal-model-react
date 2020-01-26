@@ -64,6 +64,9 @@ Universal model is a model which can be used with any of following UI frameworks
     
 **Access store in Actions**
 
+Don't modify other component's state directly inside action, but instead 
+call other component's action
+
     export default function changeComponentAStateProp1(newValue) {
       const { componentAState } = store.getState();
       componentAState.prop1 = newValue;
@@ -89,12 +92,13 @@ provided by those components. This will ensure encapsulation of each component's
       |- common
       |  |- component1
       |  |- component2
-      |     .
+      |     |- component2_1
       |     .
       |     .
       |- componentA
       |- componentB
-      |  .
+      |  |- componentB_1
+      |  |- componentB_2
       |  .
       |  .
       |- componentN
