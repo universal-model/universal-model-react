@@ -1,8 +1,9 @@
 import { Ref, UnwrapRef, reactive, watch, StopHandle, ComputedRef, computed } from 'vue';
 import { useEffect, useState } from 'react';
+import { isSubStateSymbol } from './createSubState';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type State = { [key: string]: any };
+export type State = { [key: string]: object };
 
 export type SelectorsBase<T extends State> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,20 +52,24 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  useStateAndSelectors(subStates: any[], selectors: any[]): void {
+  useStateAndSelectors(subStates: object[], selectors: ComputedRef<any>[]): void {
     this.useState(subStates);
     this.useSelectors(selectors);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  useState(subStates: any[]): void {
+  useState(subStates: object[]): void {
     const [, updateViewDueToStateChange] = useState({});
 
     useEffect(() => {
       const stopWatches = [] as StopHandle[];
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      subStates.forEach((subState: any) => {
+      subStates.forEach((subState: object) => {
+        if (!Object.getOwnPropertySymbols(subState)[0]) {
+          throw new Error('One of given subStates is not subState');
+        }
+
         stopWatches.push(
           watch(
             () => subState,
@@ -81,7 +86,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  useSelectors(selectors: any[]): void {
+  useSelectors(selectors: ComputedRef<any>[]): void {
     const [, updateViewDueToSelectorChange] = useState({});
 
     useEffect(() => {

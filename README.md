@@ -30,32 +30,53 @@ Universal model is a model which can be used with any of following UI frameworks
 - A new view can be created to represent model differently without any changes to model
 
 ## API
-
-Create and export store in store.ts:
-
-    export default createStore(initialState, selectors);
-
-Access store
-
+    const store = createStore(initialState, combineSelectors(selectors))
     const state = store.getState();
     const selectors = store.getSelectors();
     const [state, selectors] = store.getStateAndSelectors();
+    useState(states);
+    useSelectors(selectors);
+    useStateAndSelectors(states, selectors);
 
-Use state and selectors in Views (React functional components)
+## API Examples
+**Create and export store in store.ts:**
+    
+    const initialState = {
+      componentAState: initialComponentAState,
+      componentBState: initialComponentBState,
+      .
+      .
+    };
+    
+    export type State = typeof initialState;
+    
+    const selectors = combineSelectors([
+      createComponentAStateSelectors<State>(),
+      createComponentBStateSelectors<State>(),
+      .
+      .
+    ]);
+    
+    export default createStore(initialState, selectors);
+    
+**Access store in Actions**
+
+    export default function changeComponentAStateProp1(newValue) {
+      const { componentAState } = store.getState();
+      componentAState.prop1 = newValue;
+    }
+
+**Use actions, state and selectors in Views (React functional components)**
+
+Components should use only their own state and access other components' states using selectors
+provided by those components. This will ensure encapsulation of each component's state.
     
     const View = () => {
-      const { subState1, subState2: { prop1 }, subState3: { prop1: myProp } } = store.getState();
-      const { selector1, selector2 } = store.getSelectors();
-
-      useState([subState1, prop1, myProp]);
-      useSelectors([selector1, selector2]);
+      const { componentAState, { selector1, selector2 } = store.getStateAndSelectors();
+      useStateAndSelectors([componentAState], [selector1, selector2]);
       
-      // or alternatively
-      useStateAndSelectors([subState1, prop1, myProp], [selector1, selector2]);
-      
-      // get the value of a selector using it's 'value' property
+      // NOTE! Get the value of a selector using it's 'value' property!
       console.log(selector1.value);
-     
     }
 
 ## Clean UI Code directory layout
@@ -85,6 +106,41 @@ Use state and selectors in Views (React functional components)
 # Example
 
 ## View
+App.tsx
+
+    import * as React from 'react';
+    import HeaderView from './header/view/HeaderView';
+    import TodoListView from './todolist/view/TodoListView';
+    
+    const App = () => (
+      <div>
+        <HeaderView />
+        <TodoListView />
+      </div>
+    );
+    
+    export default App;
+    
+HeaderView.tsx
+
+    import * as React from 'react';
+    import store from '@/store/store';
+    import changeUserName from '@/header/model/actions/changeUserName';
+    
+    const HeaderView = () => {
+      const { headerState } = store.getState();
+      store.useState([headerState]);
+    
+      return (
+        <div>
+          <h1>{headerState.userName}</h1>
+          <label>User name:</label>
+          <input onChange={({ target: { value } }) => changeUserName(value)} />
+        </div>
+      );
+    };
+    
+    export default HeaderView;
 
 TodoListView.tsx
 
@@ -99,8 +155,8 @@ TodoListView.tsx
     import toggleShouldShowOnlyUnDoneTodos from '../model/actions/toggleShouldShowOnlyUnDoneTodos';
 
     const TodoListView = () => {
-      const [{ todosState }, { shownTodos }] = store.getStateAndSelectors();
-      store.useStateAndSelectors([todosState], [shownTodos]);
+      const [{ todosState }, { shownTodos, userName }] = store.getStateAndSelectors();
+      store.useStateAndSelectors([todosState], [shownTodos, userName]);
 
       useEffect(() => {
         // noinspection JSIgnoredPromiseFromCall
