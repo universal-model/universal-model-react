@@ -230,25 +230,26 @@ todoListController.ts
 
 store.ts
 
-    import { createSubState, createStore } from 'universal-model-react';
+    import { combineSelectors, createStore, createSubState } from 'universal-model-react';
+    import initialHeaderState from '@/header/model/state/initialHeaderState';
     import initialTodoListState from '@/todolist/model/state/initialTodoListState';
     import createTodoListStateSelectors from '@/todolist/model/state/createTodoListStateSelectors';
-
+    import createHeaderStateSelectors from '@/header/model/state/createHeaderStateSelectors';
+    
     const initialState = {
-      todosState: createSubState(initialTodosState),
-      otherState: createSubState(initialOtherState),
-      .
-      .
+      headerState: createSubState(initialHeaderState),
+      todosState: createSubState(initialTodoListState)
     };
-
+    
     export type State = typeof initialState;
-
+    
     const selectors = combineSelectors([
-      createTodosStateSelectors<State>(),
-      createOtherStateSelectors<State>()
+      createTodoListStateSelectors<State>(),
+      createHeaderStateSelectors<State>()
     ]);
-
+    
     export default createStore(initialState, selectors);
+
 
 ### State
 
