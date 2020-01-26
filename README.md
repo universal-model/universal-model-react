@@ -30,11 +30,13 @@ Universal model is a model which can be used with any of following UI frameworks
 - A new view can be created to represent model differently without any changes to model
 
 ## API
-    const subState = createSubState(subState);
+    createSubState(subState);
     const store = createStore(initialState, combineSelectors(selectors))
+    
     const state = store.getState();
     const selectors = store.getSelectors();
     const [state, selectors] = store.getStateAndSelectors();
+    
     useState(states);
     useSelectors(selectors);
     useStateAndSelectors(states, selectors);
