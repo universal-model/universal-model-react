@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import { SubStateFlagWrapper } from './createSubState';
 
 export type SubState = Omit<object, '__isSubState__'> & SubStateFlagWrapper;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type State = { [key: string]: SubState };
 
 export type SelectorsBase<T extends State> = {
