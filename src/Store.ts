@@ -57,14 +57,12 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
     this.useSelectors(selectors);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useState(subStates: SubState[]): void {
     const [, updateViewDueToStateChange] = useState({});
 
     useEffect(() => {
       const stopWatches = [] as StopHandle[];
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       subStates.forEach((subState: SubState) => {
         if (!subState.__isSubState__) {
           throw new Error('useState: One of given subStates is not subState');
