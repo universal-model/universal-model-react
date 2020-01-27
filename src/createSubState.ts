@@ -3,7 +3,7 @@ export type SubStateFlagWrapper = {
 };
 
 type AllowedSubStateProperties<T> = {
-  [K in keyof T]: K extends '__isSubState__' ? never : string;
+  [K in keyof T]: K extends '__isSubState__' ? never : T[K];
 };
 
 export default function createSubState<T extends object>(
