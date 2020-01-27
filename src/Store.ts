@@ -1,8 +1,11 @@
 import { Ref, UnwrapRef, reactive, watch, StopHandle, ComputedRef, computed } from 'vue';
 import { useEffect, useState } from 'react';
+import { SymbolWrapper } from './createSubState';
+
+export type SubState = object & SymbolWrapper;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type State = { [key: string]: object };
+export type State = { [key: string]: SubState };
 
 export type SelectorsBase<T extends State> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,20 +54,20 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  useStateAndSelectors(subStates: object[], selectors: ComputedRef<any>[]): void {
+  useStateAndSelectors(subStates: SubState[], selectors: ComputedRef<any>[]): void {
     this.useState(subStates);
     this.useSelectors(selectors);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  useState(subStates: object[]): void {
+  useState(subStates: SubState[]): void {
     const [, updateViewDueToStateChange] = useState({});
 
     useEffect(() => {
       const stopWatches = [] as StopHandle[];
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      subStates.forEach((subState: object) => {
+      subStates.forEach((subState: SubState) => {
         if (!Object.getOwnPropertySymbols(subState)[0]) {
           throw new Error('useState: One of given subStates is not subState');
         }
