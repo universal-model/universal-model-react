@@ -68,7 +68,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       subStates.forEach((subState: SubState) => {
-        if (!Object.getOwnPropertySymbols(subState)[0]) {
+        if (!subState.__isSubState__) {
           throw new Error('useState: One of given subStates is not subState');
         }
 

@@ -6,7 +6,7 @@ export default function createStore<T extends State, U extends SelectorsBase<T>>
 ): Store<T, U> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Object.entries(initialState).forEach(([, subState]: [string, SubState]) => {
-    if (!Object.getOwnPropertySymbols(subState)[0]) {
+    if (!subState.__isSubState__) {
       throw new Error(
         'createStore: One of given subStates is not subState. You must call createSubState(subState)'
       );
