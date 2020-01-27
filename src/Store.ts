@@ -1,8 +1,8 @@
 import { Ref, UnwrapRef, reactive, watch, StopHandle, ComputedRef, computed } from 'vue';
 import { useEffect, useState } from 'react';
-import { SymbolWrapper } from './createSubState';
+import { SubStateFlagWrapper } from './createSubState';
 
-export type SubState = object & SymbolWrapper;
+export type SubState = Omit<object, '__isSubState__'> & SubStateFlagWrapper;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type State = { [key: string]: SubState };

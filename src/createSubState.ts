@@ -1,12 +1,12 @@
-const isSubStateSymbol = Symbol();
-
-export type SymbolWrapper = {
-  [isSubStateSymbol]: boolean;
+export type SubStateFlagWrapper = {
+  __isSubState__: boolean;
 };
 
-export default function createSubState<T extends object>(subState: T): T & SymbolWrapper {
+export default function createSubState<T extends Omit<object, '__isSubState__'>>(
+  subState: T
+): T & SubStateFlagWrapper {
   return {
-    [isSubStateSymbol]: true,
+    __isSubState__: true,
     ...subState
   };
 }
