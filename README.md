@@ -37,9 +37,10 @@ Universal model is a model which can be used with any of following UI frameworks
       |- common
       |  |- component1
       |  |- component2
-      |     |- component2_1
-      |     .
-      |     .
+      |  . |- component2_1
+      |  . 
+      |  . 
+      |  .
       |- componentA
       |- componentB
       |  |- componentB_1
@@ -79,6 +80,10 @@ Universal model is a model which can be used with any of following UI frameworks
     };
     
 **Create selectors**
+
+When using foreign state inside selectors, prefer creating foreign state selectors and accessing foreign
+state through them instead of directly accessing foreign state inside selector. This will ensure  better
+encapsulation of component state.
 
     const createComponentASelectors = <T extends State>() => ({
       selector1: (state: State) => state.componentAState.prop1  + state.componentAState.prop2
@@ -137,11 +142,11 @@ componentBStore.js
 store.js
 
     const initialState = {
-       ...componentAInitialState,
-       ...componentBInitialState,
-       .
-       .
-       ...componentNInitialState
+      ...componentAInitialState,
+      ...componentBInitialState,
+      .
+      .
+      ...componentNInitialState
     };
           
     export type State = typeof initialState;
@@ -174,6 +179,8 @@ call other component's action. This will ensure encapsulation of component's own
 
 **Use actions, state and selectors in Views (React functional components)**
 
+Class-based components are not currently supported.
+
 Components should use only their own state and access other components' states using selectors
 provided by those components. This will ensure encapsulation of each component's state.
     
@@ -191,8 +198,8 @@ provided by those components. This will ensure encapsulation of each component's
 App.tsx
 
     import * as React from 'react';
-    import HeaderView from './header/view/HeaderView';
-    import TodoListView from './todolist/view/TodoListView';
+    import HeaderView from '@/header/view/HeaderView';
+    import TodoListView from '@/todolist/view/TodoListView';
     
     const App = () => (
       <div>
@@ -228,13 +235,13 @@ TodoListView.tsx
 
     import * as React from 'react';
     import { useEffect } from 'react';
-    import store from '../../store/store';
-    import { Todo } from '../model/state/initialTodoListState';
-    import removeTodo from '../model/actions/removeTodo';
-    import fetchTodos from '../model/actions/fetchTodos';
-    import todoListController from '../controller/todoListController';
-    import toggleIsDoneTodo from '../model/actions/toggleIsDoneTodo';
-    import toggleShouldShowOnlyUnDoneTodos from '../model/actions/toggleShouldShowOnlyUnDoneTodos';
+    import store from '@/store/store';
+    import { Todo } from '@/todolist/model/state/initialTodoListState';
+    import removeTodo from '@/todolist/model/actions/removeTodo';
+    import fetchTodos from '@/todolist/model/actions/fetchTodos';
+    import todoListController from '@/todolist/controller/todoListController';
+    import toggleIsDoneTodo from '@/todolist/model/actions/toggleIsDoneTodo';
+    import toggleShouldShowOnlyUnDoneTodos from '@/todolist/model/actions/toggleShouldShowOnlyUnDoneTodos';
 
     const TodoListView = () => {
       const [{ todosState }, { shownTodos, userName }] = store.getStateAndSelectors();
@@ -329,7 +336,6 @@ store.ts
     
     export default createStore(initialState, selectors);
 
-
 ### State
 
 #### Initial state
@@ -338,7 +344,6 @@ initialHeaderState.ts
     export default {
       userName: 'John'
     };
-
 
 initialTodoListState.ts
 
@@ -406,9 +411,9 @@ ITodoService.ts
 
 FakeTodoService.ts
 
-    import { ITodoService } from './ITodoService';
-    import { Todo } from '../state/initialTodoListState';
-    import Constants from '../../../Constants';
+    import { ITodoService } from '@/todolist/model/service/ITodoService';
+    import { Todo } from '@/todolist/model/state/initialTodoListState';
+    import Constants from '@/Constants';
     
     export default class FakeTodoService implements ITodoService {
       tryFetchTodos(): Promise<Todo[]> {
@@ -444,10 +449,9 @@ changeUserName.ts
       headerState.userName = newUserName;
     }
 
-
 addTodo.ts
 
-    import store from '../../../store/store';
+    import store from '@/store/store';
     
     let id = 3;
     
@@ -504,13 +508,13 @@ fetchTodos.ts
       todosState.isFetchingTodos = true;
       todosState.hasTodosFetchFailure = false;
 
-        try {
-          todosState.todos = await todoService.tryFetchTodos();
-        } catch (error) {
-          todosState.hasTodosFetchFailure = true;
-        }
+      try {
+        todosState.todos = await todoService.tryFetchTodos();
+      } catch (error) {
+        todosState.hasTodosFetchFailure = true;
+      }
 
-        todosState.isFetchingTodos = false;
+      todosState.isFetchingTodos = false;
     }
 
 ### Full Example
