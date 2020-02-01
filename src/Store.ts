@@ -23,6 +23,7 @@ type ReactiveState<T> = T extends Ref ? T : UnwrapRef<T>;
 export default class Store<T extends State, U extends SelectorsBase<T>> {
   private readonly reactiveState: ReactiveState<T>;
   private readonly reactiveSelectors: ComputedSelectors<T, U>;
+  private viewToNeedsUpdateMap = new Map();
 
   constructor(initialState: T, selectors?: Selectors<T, U>) {
     this.reactiveState = reactive(initialState);
@@ -53,12 +54,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useStateAndSelectors(subStates: SubState[], selectors: ComputedRef<any>[]): void {
-    this.useState(subStates);
-    this.useSelectors(selectors);
-  }
-
-  useState(subStates: SubState[]): void {
-    const [, updateViewDueToStateChange] = useState({});
+    const [view, updateView] = useState({});
 
     useEffect(() => {
       const stopWatches = [] as StopHandle[];
@@ -71,9 +67,78 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
         stopWatches.push(
           watch(
             () => subState,
-            () => updateViewDueToStateChange({}),
+            () => {
+              if (!this.viewToNeedsUpdateMap.get(view)) {
+                setTimeout(() => {
+                  this.viewToNeedsUpdateMap.delete(view);
+                  updateView({});
+                }, 0);
+              }
+
+              this.viewToNeedsUpdateMap.set(view, true);
+            },
             {
-              deep: true
+              deep: true,
+              flush: 'sync'
+            }
+          )
+        );
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      selectors.forEach((selector: any) => {
+        stopWatches.push(
+          watch(
+            () => selector,
+            () => {
+              if (!this.viewToNeedsUpdateMap.get(view)) {
+                setTimeout(() => {
+                  this.viewToNeedsUpdateMap.delete(view);
+                  updateView({});
+                }, 0);
+              }
+
+              this.viewToNeedsUpdateMap.set(view, true);
+            },
+            {
+              deep: true,
+              flush: 'sync'
+            }
+          )
+        );
+      });
+
+      return () => stopWatches.forEach((stopWatch: StopHandle) => stopWatch());
+    }, []);
+  }
+
+  useState(subStates: SubState[]): void {
+    const [view, updateView] = useState({});
+
+    useEffect(() => {
+      const stopWatches = [] as StopHandle[];
+
+      subStates.forEach((subState: SubState) => {
+        if (!subState.__isSubState__) {
+          throw new Error('useState: One of given subStates is not subState');
+        }
+
+        stopWatches.push(
+          watch(
+            () => subState,
+            () => {
+              if (!this.viewToNeedsUpdateMap.get(view)) {
+                setTimeout(() => {
+                  this.viewToNeedsUpdateMap.delete(view);
+                  updateView({});
+                }, 0);
+              }
+
+              this.viewToNeedsUpdateMap.set(view, true);
+            },
+            {
+              deep: true,
+              flush: 'sync'
             }
           )
         );
@@ -85,7 +150,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useSelectors(selectors: ComputedRef<any>[]): void {
-    const [, updateViewDueToSelectorChange] = useState({});
+    const [view, updateView] = useState({});
 
     useEffect(() => {
       const stopWatches = [] as StopHandle[];
@@ -95,9 +160,19 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
         stopWatches.push(
           watch(
             () => selector,
-            () => updateViewDueToSelectorChange({}),
+            () => {
+              if (!this.viewToNeedsUpdateMap.get(view)) {
+                setTimeout(() => {
+                  this.viewToNeedsUpdateMap.delete(view);
+                  updateView({});
+                }, 0);
+              }
+
+              this.viewToNeedsUpdateMap.set(view, true);
+            },
             {
-              deep: true
+              deep: true,
+              flush: 'sync'
             }
           )
         );
