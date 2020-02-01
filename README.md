@@ -7,6 +7,9 @@ Universal model is a model which can be used with any of following UI frameworks
 - Svelte 3+ [universal-model-svelte]
 - Vue.js 3+ [universal-model-vue]
 
+If you want to use multiple UI frameworks at the same time, you can use single model
+with [universal-model] library
+
 ## Install
 
     npm install --save universal-model-react
@@ -525,6 +528,7 @@ https://github.com/universal-model/universal-model-react-todo-app
 
 MIT License
 
+[universal-model]: https://github.com/universal-model/universal-model
 [universal-model-angular]: https://github.com/universal-model/universal-model-angular
 [universal-model-svelte]: https://github.com/universal-model/universal-model-svelte
 [universal-model-vue]: https://github.com/universal-model/universal-model-vue
