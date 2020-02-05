@@ -260,8 +260,8 @@ TodoListView.tsx
       useEffect(() => {
         // noinspection JSIgnoredPromiseFromCall
         fetchTodos();
-        document.addEventListener('keypress', todoListController.handleKeyPress);
-        return () => document.removeEventListener('keypress', todoListController.handleKeyPress);
+        document.addEventListener('keydown', todoListController.handleKeyDown);
+        return () => document.removeEventListener('keydown', todoListController.handleKeyDown);
       }, []);
 
       let todoListContent;
@@ -311,10 +311,14 @@ todoListController.ts
     import removeAllTodos from "@/todolist/model/actions/removeAllTodos";
 
     export default {
-      handleKeyPress(keyboardEvent: KeyboardEvent): void {
+      handleKeyDown(keyboardEvent: KeyboardEvent): void {
         if (keyboardEvent.code === 'KeyA' && keyboardEvent.ctrlKey) {
+          keyboardEvent.stopPropagation();
+          keyboardEvent.preventDefault();
           addTodo();
         } else if (keyboardEvent.code === 'KeyR' && keyboardEvent.ctrlKey) {
+           keyboardEvent.stopPropagation();
+           keyboardEvent.preventDefault();
           removeAllTodos();
         }
       }
