@@ -195,8 +195,8 @@ Components should use only their own state and access other components' states u
 provided by those components. This will ensure encapsulation of each component's state.
     
     const View = () => {
-      const { componentAState, { selector1, selector2 } = store.getStateAndSelectors();
-      useStateAndSelectors([componentAState], [selector1, selector2]);
+      const [{ componentAState }, { selector1, selector2 }] = store.getStateAndSelectors();
+      store.useStateAndSelectors([componentAState], [selector1, selector2]);
       
       // NOTE! Get the value of a selector using it's 'value' property!
       console.log(selector1.value);
