@@ -1,6 +1,6 @@
 {
   "name": "universal-model-react",
-  "version": "0.11.9",
+  "version": "0.11.10",
   "description": "Universal model for React",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
