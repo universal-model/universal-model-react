@@ -133,7 +133,7 @@ and will throw an error.
 in large projects you should have sub stores for components and these sub store are combined 
 together to a single store in store.js:
 
-componentBStore.js
+**componentBStore.js**
 
     const componentBnitialState = { 
       componentBState: createSubState(initialComponentBState),
@@ -149,7 +149,7 @@ componentBStore.js
       createComponent2Selectors<State>('componentB');
     ]);
     
-store.js
+**store.js**
 
     const initialState = {
       ...componentAInitialState,
