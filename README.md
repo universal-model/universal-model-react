@@ -102,32 +102,23 @@ encapsulation of component state.
     
 **Create and export store in store.ts:**
 
-combineSelectors() call is not necessarily needed, but it checks if there are duplicate keys in selectors
-and will throw an error telling which key was duplicated.
-Using combineSelectors you can keep your selector names short and only namespace them if needed.
+combineSelectors() checks if there are duplicate keys in selectors and will throw an error telling which key was duplicated.
+By using combineSelectors you can keep your selector names short and only namespace them if needed.
     
     const initialState = {
       componentAState: createSubState(initialComponentAState),
-      
-      componentBState: createSubState(initialComponentBState),
-      componentB_1State: createSubState(initialComponentB_1State),
-      component1ForComponentBState: createSubState(initialComponent1State),
-      component2ForComponentBState: createSubState(initialComponent2State),
-      .
-      .
+      componentBState: createSubState(initialComponentBState)
     };
     
     export type State = typeof initialState;
     
-    const selectors = combineSelectors([
-      createComponentAStateSelectors<State>(),
-      createComponentBStateSelectors<State>(),
-      createComponentB_1StateSelectors<State>(),
-      createComponent1Selectors<State>('componentB');
-      createComponent2Selectors<State>('componentB');
-      .
-      .
-    ]);
+    const componentAStateSelectors = createComponentAStateSelectors<State>();
+    const componentBStateSelectors = createComponentBStateSelectors<State>();
+    
+    const selectors = combineSelectors<State, typeof componentAStateSelectors, typeof componentBStateSelectors>(
+      componentAStateSelectors,
+      componentBStateSelectors
+    );
     
     export default createStore<State, typeof selectors>(initialState, selectors);
     
@@ -136,19 +127,21 @@ together to a single store in store.js:
 
 **componentBStore.js**
 
-    const componentBnitialState = { 
+    const componentBInitialState = { 
       componentBState: createSubState(initialComponentBState),
       componentB_1State: createSubState(initialComponentB_1State),
-      component1ForComponentBState: createSubState(initialComponent1State),
-      component2ForComponentBState: createSubState(initialComponent2State),  
+      component1ForComponentBState: createSubState(initialComponent1State) 
     };
     
-    const componentBSelectors = combineSelectors([
-      createComponentBStateSelectors<State>(),
-      createComponentB_1StateSelectors<State>(),
-      createComponent1Selectors<State>('componentB');
-      createComponent2Selectors<State>('componentB');
-    ]);
+    const componentBStateSelectors = createComponentBStateSelectors<State>();
+    const componentB_1StateSelectors = createComponentB_1StateSelectors<State>();
+    const component1Selectors = createComponent1Selectors<State>('componentB');
+    
+    const componentBSelectors = combineSelectors<State, typeof componentBStateSelectors, typeof componentB_1StateSelectors, typeof component1Selectors>(
+      componentBStateSelectors,
+      componentB_1StateSelectors,
+      component1Selectors
+    );
     
 **store.js**
 
@@ -156,21 +149,20 @@ together to a single store in store.js:
       ...componentAInitialState,
       ...componentBInitialState,
       .
-      .
       ...componentNInitialState
     };
           
     export type State = typeof initialState;
         
-    const selectors = combineSelectors([
+    const selectors = combineSelectors<State, typeof componentASelectors, typeof componentBSelectors, typeof componentNSelectors>([
       componentASelectors,
       componentBSelectors,
-      ...
+      .
       componentNSelectors
     ]);
         
-    export default createStore(initialState, selectors);
-    
+    export default createStore<State, typeof selectors>(initialState, selectors);
+
 **Access store in Actions**
 
 Don't modify other component's state directly inside action, but instead 
@@ -347,10 +339,10 @@ store.ts
     const headerStateSelectors =  createHeaderStateSelectors<State>();
     const todoListStateSelectors = createTodoListStateSelectors<State>();
     
-    const selectors = combineSelectors<State, typeof headerStateSelectors, typeof todoListStateSelectors>([
+    const selectors = combineSelectors<State, typeof headerStateSelectors, typeof todoListStateSelectors>(
      headerStateSelectors,
      todoListStateSelectors 
-    ]);
+    );
     
     export default createStore<State, typeof selectors>(initialState, selectors);
 
