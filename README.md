@@ -526,7 +526,7 @@ fetchTodos.ts
       todosState.isFetchingTodos = false;
     }
 
-### Full Example
+### Full Examples
 
 https://github.com/universal-model/universal-model-react-todo-app
 
