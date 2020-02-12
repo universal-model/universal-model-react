@@ -1,5 +1,10 @@
 # Universal Model for React
 
+[![version][version-badge]][package]
+[![Downloads][Downloads]][package]
+[![build][build]][circleci]
+[![MIT License][license-badge]][license]
+
 Universal model is a model which can be used with any of following UI frameworks:
 
 - Angular 2+ [universal-model-angular]
@@ -540,6 +545,13 @@ where DI is used to create services.
 
 MIT License
 
+[license-badge]: https://img.shields.io/badge/license-MIT-green
+[license]: https://github.com/universal-model/universal-model-react/blob/master/LICENSE
+[version-badge]: https://img.shields.io/npm/v/universal-model-react.svg?style=flat-square
+[package]: https://www.npmjs.com/package/universal-model-react
+[Downloads]: https://img.shields.io/npm/dm/universal-model-react
+[build]: https://img.shields.io/circleci/project/github/universal-model/universal-model-react/master.svg?style=flat-square
+[circleci]: https://circleci.com/gh/universal-model/universal-model-react/tree/master
 [example]: https://github.com/universal-model/react-todo-app-with-dependency-injection
 [universal-model]: https://github.com/universal-model/universal-model
 [universal-model-angular]: https://github.com/universal-model/universal-model-angular
