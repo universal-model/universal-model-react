@@ -21,6 +21,7 @@ with [universal-model] library
 ## Clean UI Architecture
 
 ![alt text](https://github.com/universal-model/universal-model-vue/raw/master/images/mvc.png 'MVC')
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Funiversal-model%2Funiversal-model-react.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Funiversal-model%2Funiversal-model-react?ref=badge_shield)
 
 - Model-View-Controller (https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)
 - User triggers actions by using view or controller
@@ -545,3 +546,6 @@ MIT License
 [universal-model-angular]: https://github.com/universal-model/universal-model-angular
 [universal-model-svelte]: https://github.com/universal-model/universal-model-svelte
 [universal-model-vue]: https://github.com/universal-model/universal-model-vue
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Funiversal-model%2Funiversal-model-react.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Funiversal-model%2Funiversal-model-react?ref=badge_large)
