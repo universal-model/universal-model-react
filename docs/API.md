@@ -85,20 +85,20 @@ gets state and selectors from the store
     
     useState(subStates: SubState[]): void
     
-makes view use given sub-state(s) and makes changes to given sub-state(s) to update the view.
+makes React functional component to use given sub-state(s) and makes changes to given sub-state(s) to update the view.
 If you call only getState() and forget to call useState(), your view won't be reactive and does not update.
 
 ### Store::useSelectors
 
     useSelectors(selectors: ComputedRef[]): void 
     
-makes view use given selectors and makes changes to given selectors to update the view.
+makes React functional component to use given selectors and makes changes to given selectors to update the view.
 If you call only getSelectors() and forget to call useSelectors(), your view won't be reactive and does not update.
 
 ### Store::useStateAndSelectors
 
     useStateAndSelectors(subStates: SubState[], selectors: ComputedRef[]): void
     
-makes view use given sub-state(s) and selectors and makes changes to given sub-state(s)
+makes React functional component to use given sub-state(s) and selectors and makes changes to given sub-state(s)
 and selectors to update the view.
 If you call only getStateAndSelectors() and forget to call useStateAndSelectors(), your view won't be reactive and does not update.
