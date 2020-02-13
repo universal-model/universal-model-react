@@ -76,6 +76,8 @@ state (or sub-stores)
     useState([componentAState]);
     useSelectors([selector1, selector2]);
     useStateAndSelectors([componentAState], [selector1, selector2]);
+    
+[Detailed API documentation](docs/API.md)
 
 ## API Examples
 **Create initial states**
