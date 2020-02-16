@@ -64,36 +64,42 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
   }
 
   watchSubStatesAndSelectors(
-    subStates: SubState[] | ComputedRef[],
+    subStatesOrSelectors: SubState[] | ComputedRef[],
     stopWatches: StopHandle[],
     view: {},
     updateView: (newState: {}) => void
   ): void {
-    subStates.forEach((subState: SubState | ComputedRef) => {
+    subStatesOrSelectors.forEach((subState: SubState | ComputedRef) => {
       if (!('effect' in subState) && !subState.__isSubState__) {
         throw new Error('useState: One of given subStates is not subState');
       }
 
-      stopWatches.push(
-        watch(
-          () => subState,
-          () => {
-            if (!this.viewToNeedsUpdateMap.get(view)) {
-              setTimeout(() => {
-                this.viewToNeedsUpdateMap.delete(view);
-                updateView({});
-              }, 0);
-            }
-
-            this.viewToNeedsUpdateMap.set(view, true);
-          },
-          {
-            deep: true,
-            flush: 'sync'
-          }
-        )
-      );
+      stopWatches.push(this.watch(subStatesOrSelectors, view, updateView));
     });
+  }
+
+  watch(
+    subStatesOrSelectors: SubState[] | ComputedRef[],
+    view: {},
+    updateView: (newState: {}) => void
+  ): StopHandle {
+    return watch(
+      () => subStatesOrSelectors,
+      () => {
+        if (!this.viewToNeedsUpdateMap.get(view)) {
+          setTimeout(() => {
+            this.viewToNeedsUpdateMap.delete(view);
+            updateView({});
+          }, 0);
+        }
+
+        this.viewToNeedsUpdateMap.set(view, true);
+      },
+      {
+        deep: true,
+        flush: 'sync'
+      }
+    );
   }
 
   useState(subStates: SubState[]): void {

@@ -46,9 +46,7 @@ const selectors = {
   weakSetSelector: (state: State) => (state.state1.weakSet.has(object) ? 3 : 1)
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
-useEffect.mockImplementation((func: any) => func());
+let useEffectReturnValue: Function;
 
 let store: Store<State, typeof selectors>;
 let updateView: unknown;
@@ -59,6 +57,10 @@ beforeEach(() => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
   // @ts-ignore
   useState.mockReturnValue([{}, updateView]);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useEffect.mockImplementation((func: any) => (useEffectReturnValue = func()));
 });
 
 describe('Store', () => {
@@ -93,6 +95,20 @@ describe('Store', () => {
         // @ts-ignore
         store.useState([{}]);
       }).toThrowError('useState: One of given subStates is not subState');
+    });
+
+    it('should stop started watches', () => {
+      // GIVEN
+      const stopWatch = jest.fn();
+      store.watch = () => stopWatch;
+      const { state1 } = store.getState();
+      store.useState([state1]);
+
+      // WHEN
+      useEffectReturnValue();
+
+      // THEN
+      expect(stopWatch).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -160,6 +176,20 @@ describe('Store', () => {
       expect(weakMapSelector.value).toBe(3);
       expect(weakSetSelector.value).toBe(3);
       expect(updateView).toHaveBeenCalledTimes(1);
+    });
+
+    it('should stop started watches', () => {
+      // GIVEN
+      const stopWatch = jest.fn();
+      store.watch = () => stopWatch;
+      const { numberSelector, stringSelector } = store.getSelectors();
+      store.useSelectors([numberSelector, stringSelector]);
+
+      // WHEN
+      useEffectReturnValue();
+
+      // THEN
+      expect(stopWatch).toHaveBeenCalledTimes(2);
     });
   });
 
