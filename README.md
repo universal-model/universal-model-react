@@ -567,3 +567,4 @@ MIT License
 [universal-model-vue]: https://github.com/universal-model/universal-model-vue
 [coverage]: https://img.shields.io/codecov/c/github/universal-model/universal-model-react/master.svg?style=flat-square
 [codecov]: https://codecov.io/gh/universal-model/universal-model-react
+
