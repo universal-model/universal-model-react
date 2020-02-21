@@ -551,6 +551,7 @@ where DI is used to create services.
 
 ### Donate/Sponsor
 If you would like to help me to develop more great stuff, you can [donate](https://paypal.me/pksilen) or [sponsor](https://patreon.com/pksilen). Thank you!
+<a href="https://www.patreon.com/bePatron?u=29867080" data-patreon-widget-type="become-patron-button">Become a Patron!</a><script async src="https://c6.patreon.com/becomePatronButton.bundle.js"></script>
 
 ### License
 
