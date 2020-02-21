@@ -550,7 +550,7 @@ If you would like to use dependency injection (noicejs) in your app, check out t
 where DI is used to create services.
 
 ### Donate/Sponsor
-If you would like help me to develop, you can [donate](https://paypal.me/pksilen) or [sponsor](https://patreon.com/pksilen)
+If you would like to help me to develop more great stuff, you can [donate](https://paypal.me/pksilen) or [sponsor](https://patreon.com/pksilen). Thank you!
 
 ### License
 
