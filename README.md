@@ -197,7 +197,7 @@ call other component's action. This will ensure encapsulation of component's own
 Class-based components are not currently supported.
 
 Components should use only their own state and access other components' states using selectors
-provided by those components. This will ensure encapsulation of each component's state.
+provided by those components. This will ensure encapsulation of each component's state. For example:
     
     const View = () => {
       const [{ componentAState }, { selector1, selector2 }] = store.getStateAndSelectors();
@@ -207,7 +207,14 @@ provided by those components. This will ensure encapsulation of each component's
       console.log(selector1.value);
     }
 
+It is also possible to access foreign state directly using a getter function:
 
+    const View = () => {
+      const [{ componentAState, componentBState }, { selector1 }] = store.getStateAndSelectors();
+      store.useStateAndSelectors([componentAState, () => componentBState.property1], [selector1]);
+      
+      console.log(componentBState.property1);
+    }
 
 # Example
 

@@ -62,7 +62,7 @@ gets state and selectors from the store
 
 ### Store::useState 
     
-    useState(subStates: SubState[]): void
+    useState(subStates: Array<SubState | StateFunction>): void
     
 makes React functional component to use given sub-state(s) and makes changes to given sub-state(s) to update the view.<br/>
 **NOTE!** If you call only getState() and forget to call useState(), your view won't be reactive and does not update.

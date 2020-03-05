@@ -5,7 +5,7 @@ import { SubStateFlagWrapper } from './createSubState';
 export type SubState = Omit<object, '__isSubState__'> & SubStateFlagWrapper;
 export type State = { [key: string]: SubState };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type StateFunction = () => any;
+export type StateGetter = () => any;
 
 export type SelectorsBase<T extends State> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,7 +54,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
     return [this.reactiveState, this.reactiveSelectors];
   }
 
-  useStateAndSelectors(subStates: Array<SubState | StateFunction>, selectors: ComputedRef[]): void {
+  useStateAndSelectors(subStates: Array<SubState | StateGetter>, selectors: ComputedRef[]): void {
     const [view, updateView] = useState({});
 
     useEffect(() => {
@@ -66,13 +66,13 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
   }
 
   watchSubStatesAndFunctionsAndSelectors(
-    subStatesOrFunctionsOrSelectors: Array<SubState | StateFunction> | ComputedRef[],
+    subStatesOrFunctionsOrSelectors: Array<SubState | StateGetter> | ComputedRef[],
     stopWatches: StopHandle[],
     view: {},
     updateView: (newState: {}) => void
   ): void {
     subStatesOrFunctionsOrSelectors.forEach(
-      (subStateOrFunctionOrSelector: SubState | StateFunction | ComputedRef) => {
+      (subStateOrFunctionOrSelector: SubState | StateGetter | ComputedRef) => {
         if (
           !('effect' in subStateOrFunctionOrSelector) &&
           typeof subStateOrFunctionOrSelector !== 'function' &&
@@ -95,7 +95,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
   }
 
   watch(
-    subStatesOrSelectors: SubState | StateFunction | ComputedRef,
+    subStatesOrSelectors: SubState | StateGetter | ComputedRef,
     view: {},
     updateView: (newState: {}) => void
   ): StopHandle {
@@ -118,7 +118,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
     );
   }
 
-  useState(subStates: Array<SubState | StateFunction>): void {
+  useState(subStates: Array<SubState | StateGetter>): void {
     const [view, updateView] = useState({});
 
     useEffect(() => {
