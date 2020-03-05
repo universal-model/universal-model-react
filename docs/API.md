@@ -76,8 +76,8 @@ makes React functional component to use given selectors and makes changes to giv
 
 ### Store::useStateAndSelectors
 
-    useStateAndSelectors(subStates: SubState[], selectors: ComputedRef[]): void
+    useStateAndSelectors(subStates: Array<SubState | StateGetter>, selectors: ComputedRef[]): void
     
-makes React functional component to use given sub-state(s) and selectors and makes changes to given sub-state(s)
+makes React functional component to use given sub-state(s), and state getter(s) and selectors and makes changes to given sub-state(s), state getter(s)
 and selectors to update the view.<br/>
 **NOTE!** If you call only getStateAndSelectors() and forget to call useStateAndSelectors(), your view won't be reactive and does not update.

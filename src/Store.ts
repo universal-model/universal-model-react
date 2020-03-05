@@ -59,19 +59,19 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
 
     useEffect(() => {
       const stopWatches = [] as StopHandle[];
-      this.watchSubStatesAndFunctionsAndSelectors(subStates, stopWatches, view, updateView);
-      this.watchSubStatesAndFunctionsAndSelectors(selectors, stopWatches, view, updateView);
+      this.watchSubStatesAndStateGettersAndSelectors(subStates, stopWatches, view, updateView);
+      this.watchSubStatesAndStateGettersAndSelectors(selectors, stopWatches, view, updateView);
       return () => stopWatches.forEach((stopWatch: StopHandle) => stopWatch());
     }, []);
   }
 
-  watchSubStatesAndFunctionsAndSelectors(
-    subStatesOrFunctionsOrSelectors: Array<SubState | StateGetter> | ComputedRef[],
+  watchSubStatesAndStateGettersAndSelectors(
+    subStatesOrStateGettersOrSelectors: Array<SubState | StateGetter> | ComputedRef[],
     stopWatches: StopHandle[],
     view: {},
     updateView: (newState: {}) => void
   ): void {
-    subStatesOrFunctionsOrSelectors.forEach(
+    subStatesOrStateGettersOrSelectors.forEach(
       (subStateOrFunctionOrSelector: SubState | StateGetter | ComputedRef) => {
         if (
           !('effect' in subStateOrFunctionOrSelector) &&
@@ -95,12 +95,12 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
   }
 
   watch(
-    subStatesOrSelectors: SubState | StateGetter | ComputedRef,
+    subStatesOrStateGettersSelectors: SubState | StateGetter | ComputedRef,
     view: {},
     updateView: (newState: {}) => void
   ): StopHandle {
     return watch(
-      () => subStatesOrSelectors,
+      () => subStatesOrStateGettersSelectors,
       () => {
         if (!this.viewToNeedsUpdateMap.get(view)) {
           setTimeout(() => {
@@ -118,12 +118,12 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
     );
   }
 
-  useState(subStates: Array<SubState | StateGetter>): void {
+  useState(subStatesOrStateGetters: Array<SubState | StateGetter>): void {
     const [view, updateView] = useState({});
 
     useEffect(() => {
       const stopWatches = [] as StopHandle[];
-      this.watchSubStatesAndFunctionsAndSelectors(subStates, stopWatches, view, updateView);
+      this.watchSubStatesAndStateGettersAndSelectors(subStatesOrStateGetters, stopWatches, view, updateView);
       return () => stopWatches.forEach((stopWatch: StopHandle) => stopWatch());
     }, []);
   }
@@ -133,7 +133,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
 
     useEffect(() => {
       const stopWatches = [] as StopHandle[];
-      this.watchSubStatesAndFunctionsAndSelectors(selectors, stopWatches, view, updateView);
+      this.watchSubStatesAndStateGettersAndSelectors(selectors, stopWatches, view, updateView);
       return () => stopWatches.forEach((stopWatch: StopHandle) => stopWatch());
     }, []);
   }
