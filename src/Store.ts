@@ -4,6 +4,8 @@ import { SubStateFlagWrapper } from './createSubState';
 
 export type SubState = Omit<object, '__isSubState__'> & SubStateFlagWrapper;
 export type State = { [key: string]: SubState };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type StateFunction = () => any;
 
 export type SelectorsBase<T extends State> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,34 +54,48 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
     return [this.reactiveState, this.reactiveSelectors];
   }
 
-  useStateAndSelectors(subStates: SubState[], selectors: ComputedRef[]): void {
+  useStateAndSelectors(subStates: Array<SubState | StateFunction>, selectors: ComputedRef[]): void {
     const [view, updateView] = useState({});
 
     useEffect(() => {
       const stopWatches = [] as StopHandle[];
-      this.watchSubStatesAndSelectors(subStates, stopWatches, view, updateView);
-      this.watchSubStatesAndSelectors(selectors, stopWatches, view, updateView);
+      this.watchSubStatesAndFunctionsAndSelectors(subStates, stopWatches, view, updateView);
+      this.watchSubStatesAndFunctionsAndSelectors(selectors, stopWatches, view, updateView);
       return () => stopWatches.forEach((stopWatch: StopHandle) => stopWatch());
     }, []);
   }
 
-  watchSubStatesAndSelectors(
-    subStatesOrSelectors: SubState[] | ComputedRef[],
+  watchSubStatesAndFunctionsAndSelectors(
+    subStatesOrFunctionsOrSelectors: Array<SubState | StateFunction> | ComputedRef[],
     stopWatches: StopHandle[],
     view: {},
     updateView: (newState: {}) => void
   ): void {
-    subStatesOrSelectors.forEach((subState: SubState | ComputedRef) => {
-      if (!('effect' in subState) && !subState.__isSubState__) {
-        throw new Error('useState: One of given subStates is not subState');
-      }
+    subStatesOrFunctionsOrSelectors.forEach(
+      (subStateOrFunctionOrSelector: SubState | StateFunction | ComputedRef) => {
+        if (
+          !('effect' in subStateOrFunctionOrSelector) &&
+          typeof subStateOrFunctionOrSelector !== 'function' &&
+          !subStateOrFunctionOrSelector.__isSubState__
+        ) {
+          throw new Error('useState: One of given subStates is not subState');
+        }
 
-      stopWatches.push(this.watch(subStatesOrSelectors, view, updateView));
-    });
+        stopWatches.push(
+          this.watch(
+            typeof subStateOrFunctionOrSelector === 'function'
+              ? computed(subStateOrFunctionOrSelector)
+              : subStateOrFunctionOrSelector,
+            view,
+            updateView
+          )
+        );
+      }
+    );
   }
 
   watch(
-    subStatesOrSelectors: SubState[] | ComputedRef[],
+    subStatesOrSelectors: SubState | StateFunction | ComputedRef,
     view: {},
     updateView: (newState: {}) => void
   ): StopHandle {
@@ -102,12 +118,12 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
     );
   }
 
-  useState(subStates: SubState[]): void {
+  useState(subStates: Array<SubState | StateFunction>): void {
     const [view, updateView] = useState({});
 
     useEffect(() => {
       const stopWatches = [] as StopHandle[];
-      this.watchSubStatesAndSelectors(subStates, stopWatches, view, updateView);
+      this.watchSubStatesAndFunctionsAndSelectors(subStates, stopWatches, view, updateView);
       return () => stopWatches.forEach((stopWatch: StopHandle) => stopWatch());
     }, []);
   }
@@ -117,7 +133,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
 
     useEffect(() => {
       const stopWatches = [] as StopHandle[];
-      this.watchSubStatesAndSelectors(selectors, stopWatches, view, updateView);
+      this.watchSubStatesAndFunctionsAndSelectors(selectors, stopWatches, view, updateView);
       return () => stopWatches.forEach((stopWatch: StopHandle) => stopWatch());
     }, []);
   }

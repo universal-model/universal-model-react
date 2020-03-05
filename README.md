@@ -102,7 +102,7 @@ state (or sub-stores)
 
 When using foreign state inside selectors, prefer creating foreign state selectors and accessing foreign
 state through them instead of directly accessing foreign state inside selector. This will ensure  better
-encapsulation of component state.
+encapsulation of component state. For example:
 
     const createComponentASelectors = <T extends State>() => ({
       selector1: (state: State) => state.componentAState.prop1  + state.componentAState.prop2
@@ -206,6 +206,8 @@ provided by those components. This will ensure encapsulation of each component's
       // NOTE! Get the value of a selector using it's 'value' property!
       console.log(selector1.value);
     }
+
+
 
 # Example
 
