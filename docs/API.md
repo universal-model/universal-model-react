@@ -62,9 +62,9 @@ gets state and selectors from the store
 
 ### Store::useState 
     
-    useState(subStates: Array<SubState | StateFunction>): void
+    useState(subStates: Array<SubState | StateGetter>): void
     
-makes React functional component to use given sub-state(s) and makes changes to given sub-state(s) to update the view.<br/>
+makes React functional component to use given sub-state(s) and/or state from state getter(s) and makes changes to given sub-state(s) or state getters to update the view.<br/>
 **NOTE!** If you call only getState() and forget to call useState(), your view won't be reactive and does not update.
 
 ### Store::useSelectors

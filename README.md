@@ -207,7 +207,7 @@ provided by those components. This will ensure encapsulation of each component's
       console.log(selector1.value);
     }
 
-It is also possible to access foreign state directly using a getter function:
+It is also possible to access foreign state directly using a state getter function:
 
     const View = () => {
       const [{ componentAState, componentBState }, { selector1 }] = store.getStateAndSelectors();
