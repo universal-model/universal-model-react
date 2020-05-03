@@ -24,7 +24,7 @@ with [universal-model] library
 
 ## Prerequisites for universal-model-react
 
-     "react": "^16.8.0"
+    "react": "^16.8.0"
 
 ## Clean UI Architecture
 
@@ -76,12 +76,14 @@ state (or sub-stores)
 ## API
 
 ### Common API (Angular/React/Svelte/Vue)
+```ts
     createSubState(subState);
     const store = createStore(initialState, combineSelectors(selectors))
     
     const { componentAState } = store.getState();
     const { selector1, selector2 } = store.getSelectors();
     const [{ componentAState }, { selector1, selector2 }] = store.getStateAndSelectors();
+```
     
 ### React specific API
     useState([componentAState]);
